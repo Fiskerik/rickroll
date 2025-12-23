@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root { --primary: #8B5CF6; --secondary: #EC4899; --bg: #F8FAFC; --text: #1E293B; --border: #E2E8F0; }
+    body { background-color: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding: 20px; margin: 0; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    h2 { margin: 0 0 15px 0; font-size: 1.4rem; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    textarea { width: 100%; min-height: 180px; border: 2px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; box-sizing: border-box; font-family: inherit; margin-bottom: 10px; }
+    .mode-container { display: flex; gap: 10px; margin: 15px 0; }
+    .mode-option { flex: 1; position: relative; }
+    .mode-option input { position: absolute; opacity: 0; }
+    .mode-option label { display: block; text-align: center; padding: 10px; background: #EDF2F7; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; border: 2px solid transparent; transition: 0.2s; }
+    .mode-option input:checked + label { border-color: var(--primary); background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: white; margin-bottom: 15px; }
+    #generateBtn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; font-size: 16px; }
+    .score-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: #64748B; }
+    .progress-bg { width: 100%; height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; margin-bottom: 15px; }
+    .progress-fill { height: 100%; background: #10B981; width: 0%; transition: width 0.8s ease; }
+    
+    /* CRITICAL FIX: Changed to pre-wrap for wrapping + line breaks */
+    .output-area { 
+      background: #FFFFFF; 
+      border-left: 5px solid var(--secondary); 
+      padding: 20px; 
+      border-radius: 10px; 
+      font-family: 'SFMono-Regular', Consolas, monospace; 
+      font-size: 14px; 
+      line-height: 1.8; 
+      color: #334155; 
+      white-space: pre-wrap; 
+      word-break: break-word;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); 
+    }
+    .meme-highlight { color: var(--secondary); font-weight: 800; }
+    .settings { margin-top: 40px; font-size: 12px; color: #64748B; border-top: 1px solid var(--border); padding-top: 20px; }
+    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; }
+    #copyBtn { background: #F1F5F9; border: 1px solid #E2E8F0; padding: 10px; width: 100%; margin-top: 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Vertical Rickroll</h2>
+    <textarea id="inputText" placeholder="Paste text here..."></textarea>
+    
+    <div style="margin-bottom: 15px;">
+      <input type="file" id="fileInput" accept=".txt,.docx" style="display: none;">
+      <button id="uploadBtn" style="background: #F1F5F9; color: #475569; border: 1px dashed #CBD5E1; padding: 8px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 11px;">
+        📁 Upload .txt / .docx
+      </button>
+    </div>
+
+    <div class="mode-container">
+      <div class="mode-option">
+        <input type="radio" name="encMode" id="modeWord" value="word" checked>
+        <label for="modeWord">Full Words</label>
+      </div>
+      <div class="mode-option">
+        <input type="radio" name="encMode" id="modeLetter" value="letter">
+        <label for="modeLetter">First Letters</label>
+      </div>
+    </div>
+
+    <select id="memeSelector">
+      <option value="rickroll">Rickroll (10 words)</option>
+      <option value="base">All Your Base (7 words)</option>
+      <option value="fine">This Is Fine (5 words)</option>
+    </select>
+    <button id="generateBtn">Meme-ify ✨</button>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none;">
+    <div class="score-row">
+      <span>MEANING PRESERVED</span>
+      <span id="scoreText">0%</span>
+    </div>
+    <div class="progress-bg">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div id="output" class="output-area">Output will appear here...</div>
+    <button id="copyBtn">Copy to Clipboard 📋</button>
+  </div>
+
+  <div class="settings">
+    <label>OpenAI API Key:</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-...">
+    <button id="saveKeyBtn" style="background:#334155; color:white; border:none; padding:8px; width:100%; border-radius:6px; cursor:pointer;">Save Key</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
